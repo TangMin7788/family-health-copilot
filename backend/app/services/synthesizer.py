@@ -9,7 +9,7 @@ class MedGemmaSynthesizer:
         self.model = AutoModelForCausalLM.from_pretrained(
             model_id_or_path,
             torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
-            device_map={"": "cuda:1"}  # Use GPU 1 to avoid conflicts
+            device_map="auto"  # Automatically distribute across available GPUs
         )
 
     def _gen(self, prompt: str, max_new_tokens: int = 500) -> str:

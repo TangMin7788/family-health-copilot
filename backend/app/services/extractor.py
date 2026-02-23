@@ -12,11 +12,11 @@ class MedGemmaExtractor:
         self.schema = schema
         self.tokenizer = AutoTokenizer.from_pretrained(model_id_or_path, use_fast=True)
         # Use AutoModelForCausalLM (Gemma3 is supported)
-        device = "cuda:1" if torch.cuda.is_available() else "cpu"  # Use GPU 1
         self.model = AutoModelForCausalLM.from_pretrained(
             model_id_or_path,
             torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
-        ).to(device)
+            device_map="auto"  # Automatically distribute across available GPUs
+        )
 
     def _prompt(self, report_text: str) -> str:
         # Strict extraction prompt (no diagnosis, evidence required)

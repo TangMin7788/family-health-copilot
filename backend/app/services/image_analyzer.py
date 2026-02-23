@@ -23,7 +23,7 @@ class MedGemmaImageAnalyzer:
         Args:
             model_id_or_path: Path to the MedGemma model
         """
-        self.device = "cuda:1" if torch.cuda.is_available() else "cpu"  # Use GPU 1
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.model_path = model_id_or_path
         self._pipe = None
         self._load_pipeline()
@@ -34,8 +34,8 @@ class MedGemmaImageAnalyzer:
             self._pipe = pipeline(
                 "image-text-to-text",
                 model=self.model_path,
-                torch_dtype=torch.bfloat16 if "cuda" in self.device else torch.float32,
-                device=self.device,
+                torch_dtype=torch.bfloat16 if self.device == "cuda" else torch.float32,
+                device_map="auto",  # Automatically distribute across available GPUs
             )
             print(f"  ✅ Image analyzer loaded on {self.device}")
         except Exception as e:
