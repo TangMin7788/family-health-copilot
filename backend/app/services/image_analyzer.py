@@ -35,7 +35,7 @@ class MedGemmaImageAnalyzer:
                 "image-text-to-text",
                 model=self.model_path,
                 torch_dtype=torch.bfloat16 if self.device == "cuda" else torch.float32,
-                device_map="auto",  # Automatically distribute across available GPUs
+                device=self.device,
             )
             print(f"  ✅ Image analyzer loaded on {self.device}")
         except Exception as e:
