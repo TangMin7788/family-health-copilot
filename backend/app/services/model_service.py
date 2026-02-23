@@ -158,36 +158,67 @@ class ModelService:
             raise RuntimeError("Synthesizer model not loaded")
 
         try:
-            # Build conversation prompt for Gemma3 chat template
-            # Extract system prompt and user messages
-            system_prompt = ""
-            user_messages = []
+            # Build messages list for Gemma3 chat template
+            messages = []
 
+            # Add system prompt as first user message (Gemma3 doesn't have system role)
+            system_prompt = None
             for msg in conversation:
                 if msg["role"] == "system":
                     system_prompt = msg["content"]
-                elif msg["role"] == "user":
-                    user_messages.append(msg["content"])
-                elif msg["role"] == "assistant":
-                    user_messages.append(f"Assistant: {msg['content']}")
+                    break
 
-            # Combine system prompt with the latest user message
+            # Add system prompt as context
             if system_prompt:
-                # Include system prompt as context
-                latest_message = user_messages[-1] if user_messages else ""
-                full_prompt = f"{system_prompt}\n\n{latest_message}"
-            else:
-                full_prompt = user_messages[-1] if user_messages else ""
+                messages.append({
+                    "role": "user",
+                    "content": f"System instructions: {system_prompt}\n\nPlease follow these instructions for all following conversations."
+                })
+                messages.append({
+                    "role": "assistant",
+                    "content": "I understand. I will act as a Home Health Information Assistant, providing general health education and medication safety information only. I will not diagnose or prescribe, and I will advise urgent medical care when red flags appear."
+                })
 
-            # Use the synthesizer's _gen method which handles tokenization properly
-            response = self._synthesizer._gen(full_prompt, max_new_tokens=1024)
+            # Add conversation history
+            for msg in conversation:
+                if msg["role"] == "user":
+                    messages.append({
+                        "role": "user",
+                        "content": msg["content"]
+                    })
+                elif msg["role"] == "assistant":
+                    messages.append({
+                        "role": "assistant",
+                        "content": msg["content"]
+                    })
 
-            # Clean up the response - remove the prompt part if present
-            if full_prompt.strip() in response:
-                response = response.replace(full_prompt.strip(), "").strip()
+            # Generate response using tokenizer's chat template
+            formatted_prompt = self._synthesizer.tokenizer.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True
+            )
+
+            inputs = self._synthesizer.tokenizer(formatted_prompt, return_tensors="pt")
+            inputs = {k: v.to(self._synthesizer.model.device) for k, v in inputs.items()}
+
+            import torch
+            with torch.no_grad():
+                out = self._synthesizer.model.generate(
+                    **inputs,
+                    max_new_tokens=512,
+                    do_sample=True,
+                    temperature=0.4,
+                    top_p=0.9,
+                    pad_token_id=self._synthesizer.tokenizer.eos_token_id
+                )
+
+            response = self._synthesizer.tokenizer.decode(out[0], skip_special_tokens=True)
+
+            # Clean up the response - remove the prompt part
+            if formatted_prompt.strip() in response:
+                response = response.replace(formatted_prompt.strip(), "").strip()
 
             # Remove any trailing markers
-            for stop_phrase in ["Assistant:", "User:", "System:", "<end_of_turn>"]:
+            for stop_phrase in ["<end_of_turn>", "User:", "Assistant:", "Model:":
                 if stop_phrase in response:
                     response = response.split(stop_phrase)[0].strip()
 

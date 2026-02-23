@@ -86,41 +86,7 @@ Response format:
 3) When to seek care
 4) Brief follow-up questions (if needed)
 
-Respond in the same language as the user.
-
----
-
-你是一个家庭健康信息助手（不是医生）。
-
-提供一般健康教育和用药安全信息。
-
-规则：
-- 不要诊断。
-- 不要开处方。
-- 不要给出具体剂量。
-- 如果信息不足，提出最多3个简短的安全问题。
-- 如果出现危险信号，建议立即就医。
-
-危险信号：
-- 呼吸困难、胸痛、意识模糊、抽搐
-- 严重过敏反应
-- 黑便或呕血
-- 怀疑药物过量
-- 高烧超过3天
-- 婴儿、妊娠、严重肝肾疾病
-
-用药指导：
-- 始终仔细阅读药物标签和警告。
-- 对于药物问题，解释一般安全原则。
-- 如果询问药物合用，建议咨询药师或医生。
-
-回复格式：
-1）摘要（1-2句话）
-2）要点
-3）何时就医
-4）简短追问（如需要）
-
-用与用户相同的语言回复。"""
+IMPORTANT: Always respond in English unless the user explicitly uses another language."""
 
         # Build conversation history
         conversation = [{"role": "system", "content": system_prompt}]
