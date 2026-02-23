@@ -365,9 +365,9 @@ Please describe your symptoms or health concerns, and I'll do my best to provide
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="text-xs text-slate-500 self-center">Try:</span>
             {[
-              "小朋友高烧，喉咙痛，眼睛分泌物多",
-              "头痛发烧怎么办",
-              "咳嗽有痰如何用药",
+              "Child with high fever, sore throat, and eye discharge",
+              "What to do for headache and fever",
+              "How to treat cough with phlegm",
             ].map((example) => (
               <button
                 key={example}
