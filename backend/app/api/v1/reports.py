@@ -9,7 +9,7 @@ from typing import List
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from db import init_db, insert_report, list_reports_for_user, get_report
+from utils.db import init_db, insert_report, list_reports_for_user, get_report
 from backend.app.services.pii_redact import redact_pii
 from backend.app.services.triage import triage_risk
 from app.models.schemas import ReportCreate, ReportResponse
@@ -32,7 +32,7 @@ async def list_reports(
         List of reports
     """
     import sqlite3
-    from db import DB_PATH
+    from utils.db import DB_PATH
 
     try:
         conn = sqlite3.connect(DB_PATH)
@@ -144,7 +144,7 @@ async def create_report(
 
     # Create report immediately with processing status
     import sqlite3
-    from db import DB_PATH
+    from utils.db import DB_PATH
 
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -195,7 +195,7 @@ async def _process_report_task(
     """Background task to process report"""
     import sqlite3
     import json
-    from db import DB_PATH
+    from utils.db import DB_PATH
 
     print(f"[Background Task] Starting to process report {report_id}...")
 
@@ -289,7 +289,7 @@ async def delete_report(report_id: int):
         Success message
     """
     import sqlite3
-    from db import DB_PATH
+    from utils.db import DB_PATH
 
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
