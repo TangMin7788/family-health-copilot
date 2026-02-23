@@ -22,7 +22,7 @@ async def health_check():
     import sys
     from pathlib import Path
     sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
-    from db import check_db_health
+    from utils.db import check_db_health
     db_health = check_db_health()
 
     # Overall status: healthy only if both models and DB are healthy
@@ -85,7 +85,7 @@ async def database_health():
     import sys
     from pathlib import Path
     sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
-    from db import check_db_health
+    from utils.db import check_db_health
 
     return check_db_health()
 
