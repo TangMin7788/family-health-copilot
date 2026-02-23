@@ -1,0 +1,59 @@
+{
+  "type": "object",
+  "required": ["study", "sections", "entities", "critical_flags", "quality_checks"],
+  "properties": {
+    "study": {
+      "type": "object",
+      "required": ["modality", "body_part", "indication"],
+      "properties": {
+        "modality": {"type": "string"},
+        "body_part": {"type": "string"},
+        "indication": {"type": ["string", "null"]}
+      }
+    },
+    "sections": {
+      "type": "object",
+      "required": ["findings", "impression"],
+      "properties": {
+        "findings": {"type": "string"},
+        "impression": {"type": ["string", "null"]}
+      }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["entity", "anatomy", "certainty", "severity", "temporal", "evidence"],
+        "properties": {
+          "entity": {"type": "string"},
+          "anatomy": {"type": "string"},
+          "certainty": {"type": "string", "enum": ["present", "absent", "uncertain"]},
+          "severity": {"type": "string"},
+          "temporal": {"type": "string"},
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "critical_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["flag", "status", "evidence"],
+        "properties": {
+          "flag": {"type": "string"},
+          "status": {"type": "string", "enum": ["suspected", "ruled_out", "uncertain"]},
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "quality_checks": {
+      "type": "object",
+      "required": ["json_valid", "missing_sections", "notes"],
+      "properties": {
+        "json_valid": {"type": "boolean"},
+        "missing_sections": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}
