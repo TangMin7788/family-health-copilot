@@ -61,3 +61,10 @@ medgemma-1.5-4b-it/
 test_*.py
 show_reports.py
 create_sample_db.py
+
+# Backend specific
+backend/*.log
+backend/*.db
+
+# Claude memory (optional)
+.claude/
