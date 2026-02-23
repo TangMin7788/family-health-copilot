@@ -218,7 +218,7 @@ class ModelService:
                 response = response.replace(formatted_prompt.strip(), "").strip()
 
             # Remove any trailing markers
-            for stop_phrase in ["<end_of_turn>", "User:", "Assistant:", "Model:":
+            for stop_phrase in ["<end_of_turn>", "User:", "Assistant:", "Model:"]:
                 if stop_phrase in response:
                     response = response.split(stop_phrase)[0].strip()
 
