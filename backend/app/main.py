@@ -25,7 +25,7 @@ async def lifespan(app: FastAPI):
     print("🚀 Starting Family Health Copilot API...")
 
     # Initialize database with actual status checking
-    from db import init_db, check_db_health
+    from utils.db import init_db, check_db_health
     print("🔧 Initializing database...")
     db_status = init_db()
 
